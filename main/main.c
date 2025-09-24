@@ -2,7 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 
-// Function1 
+// Function2 Add
 void saverecordCSV(const char *EquipmentName,const char *EquipmentID,const char *Status,const char *MaintenanceData)
 {
     FILE *fp = fopen("equipment-test.csv","a");
@@ -18,11 +18,31 @@ void saverecordCSV(const char *EquipmentName,const char *EquipmentID,const char 
     }
 }
 
-//
+int main(){
+    
+    int choice;
+    //compusive only 1-5 choice 
+    do {
+            printf("##### Factory Equipment Operation Management System #####\n");
+    printf("Menu\n");
+    printf("1)Search\n");
+    printf("2)Add\n");
+    printf("3)update\n");
+    printf("4)Delete\n");
+    printf("5)Exit Program\n");
 
-int main()
-{
-    char filename[]= "equipment-test.csv" ;
+    
+    printf("Choose function (1-5):");
+    scanf("%d",&choice);
+    } while (choice != 1 && choice !=2 && choice !=3 && choice !=4 && choice !=5 );
+
+    switch (choice)
+    {
+    case 1:
+        
+        break;
+    case 2: //Add
+         char filename[]= "equipment-test.csv" ;
     char EquipmentName[50] ;
     char EquipmentID[6];
     char Status[6];
@@ -48,5 +68,19 @@ int main()
 
     saverecordCSV(EquipmentName,EquipmentID,Status,MaintenanceData);
     printf("Finish");
+        break;
+    case 3:
+        
+        break;
+    case 4:
+        
+        break;
+    case 5:
+        
+        break;
+    default:
+        break;
+    }
+    
     return 0;
 }
