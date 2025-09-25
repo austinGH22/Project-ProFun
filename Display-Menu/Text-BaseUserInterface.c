@@ -5,7 +5,7 @@ int main(){
     int choice;
     //compusive only 1-5 choice 
     do {
-            printf("##### Factory Equipment Operation Management System #####\n");
+     printf("##### Factory Equipment Operation Management System #####\n");
     printf("Menu\n");
     printf("1)Search\n");
     printf("2)Add\n");
@@ -24,7 +24,7 @@ int main(){
         
         break;
     case 2:
-        
+        printf("lol");
         break;
     case 3:
         

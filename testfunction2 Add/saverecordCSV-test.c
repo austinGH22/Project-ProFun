@@ -5,10 +5,10 @@
 // บันทึกข้อมูล 
 void saverecordCSV(const char *EquipmentName,const char *EquipmentID,const char *Status,const char *MaintenanceData)
 {
-    FILE *fp = fopen("equipment-test.csv","a");
+    FILE *fp = fopen("equipment-test2.csv","a");
     if(fp == NULL)
     {
-        printf("can't open file %s \n","equipment-test.csv");
+        printf("can't open file %s \n","equipment-test2.csv");
         return ;
     }
     else 
@@ -20,7 +20,7 @@ void saverecordCSV(const char *EquipmentName,const char *EquipmentID,const char 
 
 int main()
 {
-    char filename[]= "equipment-test.csv" ;
+    char filename[]= "equipment-test2.csv" ;
     char EquipmentName[50] ;
     char EquipmentID[6];
     char Status[6];
