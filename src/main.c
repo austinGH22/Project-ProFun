@@ -1,6 +1,9 @@
+#include "project.h"  //import header
 #include<stdio.h>
 
 int main(){
+
+    int x ,y ;
     
     int choice;
     //compusive only 1-5 choice 
@@ -21,7 +24,6 @@ int main(){
     switch (choice)
     {
     case 1:
-        
         break;
     case 2:
         printf("lol");
