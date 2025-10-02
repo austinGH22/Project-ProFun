@@ -12,9 +12,8 @@ typedef struct {
 } Machine;
 
 int readCSVToArray(const char *filename, Machine **list);
-void addMachine(const char *filename, Machine m);
-void searchMachine(const char *filename, const char *code);
-void updateMachineStatus(const char *filename, const char *code, const char *newStatus);
-void deleteMachine(const char *filename, const char *code);
+void addMachine(const char *filename, Machine **list, int *count);
+void searchMachine(Machine *list, int count, const char *keyword);
+
 
 #endif

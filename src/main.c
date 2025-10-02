@@ -9,17 +9,22 @@ int main()
     Machine *list = NULL;
     int n = 0;
     int choice;
+    // add
+    int count = 0;
+    //search
+    char keyword[50];
 
     // compusive only 1-5 choice
     do
     {
         printf("##### Factory Equipment Operation Management System #####\n");
         printf("Menu\n");
-        printf("1)Search\n");
+        printf("1)Read\n");
         printf("2)Add\n");
-        printf("3)update\n");
-        printf("4)Delete\n");
-        printf("5)Exit Program\n");
+        printf("3)Search\n");
+        printf("4)Update\n");
+        printf("5)Delete\n");
+        printf("6)Exit Program\n");
 
         printf("Choose function (1-5):");
         scanf("%d", &choice);
@@ -28,7 +33,7 @@ int main()
     switch (choice)
     {
     case 1:
-        free(list); // ถ้ามี list เดิมอยู่แล้วให้เคลียร์ก่อน
+        free(list);
         list = NULL;
         n = readCSVToArray("data.csv", &list);
         if (n > 0)
@@ -41,7 +46,7 @@ int main()
         }
 
         free(list); // คืน memory ที่ malloc/realloc ให้ไป
-        
+
         if (n > 0)
         {
             printf("\n--- Machine List ---\n");
@@ -61,16 +66,21 @@ int main()
         return 0;
         break;
     case 2:
-       
+        addMachine("data.csv", &list, &count);
         break;
     case 3:
-
+    
+        printf("Enter keyword to search: ");
+        scanf(" %[^\n]", keyword);
+        searchMachine(list, count, keyword);
         break;
     case 4:
 
         break;
     case 5:
 
+        break;
+    case 6:
         break;
     default:
         break;
