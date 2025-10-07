@@ -13,7 +13,10 @@ typedef struct {
 
 int readCSVToArray(const char *filename, Machine **list);
 void addMachine(const char *filename, Machine **list, int *count);
-void searchMachine(Machine *list, int count, const char *keyword);
-
+void trimNewline(char *str); 
+void toLowerCase(char *str); 
+void searchMachine(Machine *list, int count, char *keyword);
+void updateMachine(const char *filename, Machine *list, int count);
+void deleteRecordCSV(const char *filename, const char *deleteID);
 
 #endif

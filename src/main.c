@@ -11,9 +11,12 @@ int main()
     int choice;
     // add
     int count = 0;
-    //search
+    // search
     char keyword[50];
+    //update
 
+    //delete 
+    char deleteID[10];
     // compusive only 1-5 choice
     do
     {
@@ -68,17 +71,30 @@ int main()
     case 2:
         addMachine("data.csv", &list, &count);
         break;
-    case 3:
-    
-        printf("Enter keyword to search: ");
-        scanf(" %[^\n]", keyword);
-        searchMachine(list, count, keyword);
-        break;
-    case 4:
+    case 3: {
+    while (getchar() != '\n');  // เคลียร์ buffer จาก scanf ก่อนหน้า
 
+    printf("Enter keyword to search: ");
+    fgets(keyword, sizeof(keyword), stdin);
+
+    trimNewline(keyword);   // ตัด \n ออก
+    toLowerCase(keyword);   // ทำเป็นตัวเล็กทั้งหมด
+
+    if (strlen(keyword) == 0) {
+        printf("⚠️ Please enter a keyword!\n");
+    } else {
+        searchMachine(list, count, keyword);
+    }
+    break;
+}
+
+    case 4:
+    updateMachine("data.csv", list, count);
         break;
     case 5:
-
+    printf("EquipmentCode that want to delete: ");
+    scanf("%s", deleteID);
+    deleteRecordCSV("data.csv", deleteID);
         break;
     case 6:
         break;
