@@ -85,8 +85,6 @@ void addMachine(const char *filename, Machine **list, int *count) {
 
 //Function Search
 void searchMachine(Machine *list, int count, char *keyword) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
     int found=0;
     char kw[MAX_FIELD];       
     strcpy(kw, keyword);

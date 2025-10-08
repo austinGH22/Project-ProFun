@@ -56,14 +56,18 @@ int main() {
                 addMachine("data.csv",&list,&count); 
                 break;
             case 3:
-                while ((c = getchar()) != '\n' && c != EOF);
-                if(count==0){ printf("No data loaded. Read first.\n"); break;}
-                {
-                    char kw[MAX_FIELD]; getchar();
-                    //while ((c = getchar()) != '\n' && c != EOF);
-                    printf("search \"Name\" or \"Code\" or \"Status\" or \"Maintenance data\"for search: "); fgets(kw,MAX_FIELD,stdin); trimNewline(kw);
-                    searchMachine(list,count,kw);
+                printf("search \"Name\" or \"Code\" or \"Status\" or \"Maintenance data\"for search: "); 
+                char kw[MAX_FIELD];
+                if (!fgets(kw,MAX_FIELD,stdin)){
+                    continue;
                 }
+                kw[strcspn(kw, "\n")] = '\0';
+                trimNewline(kw);
+                if(strlen(kw) == 0){
+                    printf("Input must not empty!");
+                    continue;
+                }
+                searchMachine(list,count,kw);
                 break;
             case 4:
                 if(count==0){ printf("No data loaded. Read first.\n"); break;}
