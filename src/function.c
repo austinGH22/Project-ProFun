@@ -1,250 +1,212 @@
-#include "project.h" //import header
-
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
+#include "project.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
-//Read
+//-------------------HELPERS-------------------
+void trimNewline(char *str) {
+    size_t len = strlen(str);
+    if(len > 0 && (str[len-1] == '\n' || str[len-1]=='\r'))
+        str[len-1] = '\0';
+}
+
+void toLowerCase(char *str) {
+    for(int i=0; str[i]; i++)
+        str[i] = tolower((unsigned char)str[i]);
+}
+
+//-------------------READ CSV-------------------
 int readCSVToArray(const char *filename, Machine **list) {
     FILE *fp = fopen(filename, "r");
-    if (!fp) {
-        perror("File open failed");
-        return 0;
-    }
+    if(!fp) return 0;
 
-    Machine *temp = malloc(MAX_LINE * sizeof(Machine));
+    Machine *temp = malloc(sizeof(Machine));
     int count = 0;
-    char line[256];
+    char line[MAX_LINE];
 
-    while (fgets(line, sizeof(line), fp)) {
-        // ตัด \n หรือ \r ออก
-        line[strcspn(line, "\r\n")] = 0;
-
-        // อ่านข้อมูล โดย %[^,] มี space นำหน้า -> ตัดช่องว่างอัตโนมัติ
-        if (sscanf(line, " %[^,], %[^,], %[^,], %[^,\n]",
-                   temp[count].name,
-                   temp[count].code,
-                   temp[count].status,
-                   temp[count].maintenanceDate) == 4) {
+    while(fgets(line, sizeof(line), fp)) {
+        trimNewline(line);
+        if(sscanf(line, " %[^,],%[^,],%[^,],%[^,\n]",
+                  temp[count].name,
+                  temp[count].code,
+                  temp[count].status,
+                  temp[count].maintenanceDate) == 4) {
             count++;
+            temp = realloc(temp, (count+1)*sizeof(Machine));
         }
     }
 
     fclose(fp);
-
     *list = temp;
     return count;
 }
 
-//Add
+//-------------------ADD-------------------
 void addMachine(const char *filename, Machine **list, int *count) {
     Machine newMachine;
 
-    printf("Enter machine name: ");
+    printf("Enter Machine Name: ");
     scanf(" %[^\n]", newMachine.name);
 
-    printf("Enter machine code: ");
+    printf("Enter Machine ID: ");
     scanf("%s", newMachine.code);
 
-    printf("Enter status: ");
+    printf("Enter Status: ");
     scanf(" %[^\n]", newMachine.status);
 
-    printf("Enter maintenance date (YYYY-MM-DD): ");
+    printf("Enter Maintenance Date (YYYY-MM-DD): ");
     scanf("%s", newMachine.maintenanceDate);
 
-    // ขยายพื้นที่ array ด้วย realloc
-    *list = realloc(*list, (*count + 1) * sizeof(Machine));
-    if (*list == NULL) {
-        printf("❌ Memory allocation failed.\n");
-        return;
-    }
-
-    // ใส่ newMachine ไว้ท้าย array
+    *list = realloc(*list, (*count+1)*sizeof(Machine));
     (*list)[*count] = newMachine;
     (*count)++;
 
-    // เขียนลงไฟล์ CSV
     FILE *fp = fopen(filename, "a");
-    if (fp == NULL) {
-        printf("❌ Failed to open file.\n");
-        return;
-    }
-    fprintf(fp, "%s,%s,%s,%s\n",
-            newMachine.name,
-            newMachine.code,
-            newMachine.status,
-            newMachine.maintenanceDate);
-    fclose(fp);
-
-    printf("✅ Machine added successfully!\n");
-}
-
-//search
-void trimNewline(char *str) {
-    size_t len = strlen(str);
-    if (len > 0 && str[len-1] == '\n') {
-        str[len-1] = '\0';
-    }
-}
-
-void toLowerCase(char *str) {
-    for (int i = 0; str[i]; i++) {
-        str[i] = tolower((unsigned char) str[i]);
-    }
-}
-
-void searchMachine(Machine *list, int count, char *keyword) {
-    int found = 0;
-
-    // แปลง keyword ให้เป็นตัวเล็กทั้งหมด
-    toLowerCase(keyword);
-
-    for (int i = 0; i < count; i++) {
-        char code[50], name[50], status[50], date[50];
-
-        strcpy(code, list[i].code);
-        strcpy(name, list[i].name);
-        strcpy(status, list[i].status);
-        strcpy(date, list[i].maintenanceDate);
-
-        toLowerCase(code);
-        toLowerCase(name);
-        toLowerCase(status);
-        toLowerCase(date);
-
-        if (strstr(code, keyword) || strstr(name, keyword) ||
-            strstr(status, keyword) || strstr(date, keyword)) {
-            printf("✅ Found: %s | %s | %s | %s\n",
-                   list[i].code, list[i].name,
-                   list[i].status, list[i].maintenanceDate);
-            found = 1;
-        }
-    }
-
-    if (!found) {
-        printf("❌ No machine found with keyword: %s\n", keyword);
-    }
-}
-
-
-//update
-void updateMachine(const char *filename, Machine *list, int count) {
-    char code[20];
-    printf("Enter machine code to update: ");
-    scanf("%s", code);
-
-    int found = -1;
-    for (int i = 0; i < count; i++) {
-        if (strcmp(list[i].code, code) == 0) {
-            found = i;
-            break;
-        }
-    }
-
-    if (found == -1) {
-        printf("❌ No machine found with code: %s\n", code);
-        return;
-    }
-
-    int choice;
-    printf("What do you want to update?\n");
-    printf("1) Name\n");
-    printf("2) Code\n");
-    printf("3) Status\n");
-    printf("4) Maintenance Date\n");
-    printf("Choice: ");
-    scanf("%d", &choice);
-
-    switch (choice) {
-        case 1:
-            printf("Enter new name: ");
-            scanf(" %[^\n]", list[found].name);
-            break;
-        case 2:
-            printf("Enter new code: ");
-            scanf("%s", list[found].code);
-            break;
-        case 3:
-            printf("Enter new status: ");
-            scanf(" %[^\n]", list[found].status);
-            break;
-        case 4:
-            printf("Enter new maintenance date (YYYY-MM-DD): ");
-            scanf("%s", list[found].maintenanceDate);
-            break;
-        default:
-            printf("❌ Invalid choice\n");
-            return;
-    }
-
-    // เขียนข้อมูลทั้งหมดกลับไปใหม่
-    FILE *fp = fopen(filename, "w");
-    if (fp == NULL) {
-        printf("❌ Error opening file\n");
-        return;
-    }
-    for (int i = 0; i < count; i++) {
+    if(fp) {
         fprintf(fp, "%s,%s,%s,%s\n",
-                list[i].code,
-                list[i].name,
-                list[i].status,
-                list[i].maintenanceDate);
+                newMachine.name,
+                newMachine.code,
+                newMachine.status,
+                newMachine.maintenanceDate);
+        fclose(fp);
+        printf("✅ Added successfully!\n");
+    } else {
+        printf("❌ Failed to open CSV.\n");
     }
-    fclose(fp);
-
-    printf("✅ Machine updated successfully!\n");
 }
 
+//-------------------SEARCH-------------------
+void searchMachine(Machine *list, int count, char *keyword) {
+    int found=0;
+    char kw[MAX_FIELD];
+    strcpy(kw, keyword);
+    toLowerCase(kw);
 
-//delete
-void deleteRecordCSV(const char *filename, const char *deleteID) {
-    FILE *fp = fopen(filename, "r");
-    if (fp == NULL) {
-        printf("❌ Failed to open file %s \n", filename);
-        return;
+    printf("\n--- Search Results ---\n");
+    for(int i=0;i<count;i++){
+        char n[MAX_FIELD], c[MAX_FIELD], s[MAX_FIELD], d[MAX_FIELD];
+        strcpy(n,list[i].name);
+        strcpy(c,list[i].code);
+        strcpy(s,list[i].status);
+        strcpy(d,list[i].maintenanceDate);
+        toLowerCase(n); toLowerCase(c); toLowerCase(s); toLowerCase(d);
+
+        if(strstr(n,kw) || strstr(c,kw) || strstr(s,kw) || strstr(d,kw)){
+            printf("%d) %s | %s | %s | %s\n", i+1,
+                   list[i].name,list[i].code,list[i].status,list[i].maintenanceDate);
+            found=1;
+        }
     }
+    if(!found) printf("❌ No results found for '%s'\n", keyword);
+}
 
-    FILE *temp = fopen("temp.csv", "w");
-    if (temp == NULL) {
-        printf("❌ Failed to open file\n");
-        fclose(fp);
-        return;
-    }
+//-------------------UPDATE-------------------
+void updateMachine(const char *filename, Machine *list, int count) {
+    char keyword[MAX_FIELD];
+    int index=-1;
 
-    char line[256];
-    int found = 0;
+    while(1){
+        printf("\nEnter keyword to search for update (or '0' to return): ");
+        getchar(); // clear buffer
+        fgets(keyword, sizeof(keyword), stdin);
+        trimNewline(keyword);
+        if(strcmp(keyword,"0")==0) return;
 
-    while (fgets(line, sizeof(line), fp)) {
-        char copy[256];
-        strcpy(copy, line);
-
-        // ตัด \n ทิ้ง
-        copy[strcspn(copy, "\n")] = 0;
-
-        // แยกข้อมูลแต่ละ column
-        char *EquipmentName = strtok(copy, ",");
-        char *EquipmentID   = strtok(NULL, ",");
-        char *Status        = strtok(NULL, ",");
-        char *MaintenanceData = strtok(NULL, ",");
-
-        if (EquipmentID != NULL && strcmp(EquipmentID, deleteID) == 0) {
-            printf(" deleted: %s✅ \n", deleteID);
-            found = 1;
-            // ไม่เขียนบรรทัดนี้ลง temp (ข้าม = ลบ)
+        // search matching
+        int foundIndexes[MAX_LINE], fcount=0;
+        char kw[MAX_FIELD]; strcpy(kw,keyword); toLowerCase(kw);
+        for(int i=0;i<count;i++){
+            char n[MAX_FIELD], c[MAX_FIELD], s[MAX_FIELD], d[MAX_FIELD];
+            strcpy(n,list[i].name); strcpy(c,list[i].code);
+            strcpy(s,list[i].status); strcpy(d,list[i].maintenanceDate);
+            toLowerCase(n); toLowerCase(c); toLowerCase(s); toLowerCase(d);
+            if(strstr(n,kw)||strstr(c,kw)||strstr(s,kw)||strstr(d,kw)){
+                fcount++;
+                foundIndexes[fcount-1]=i;
+                printf("%d) %s | %s | %s | %s\n", fcount,
+                       list[i].name,list[i].code,list[i].status,list[i].maintenanceDate);
+            }
+        }
+        if(fcount==0){
+            printf("❌ No match found.\n");
             continue;
         }
-        // ถ้าไม่ใช่ record ที่ต้องลบ เขียนลง temp
-        fputs(line, temp);
-    }
 
-    if (!found) {
-        printf("⚠️ Undefined Code: %s\n", deleteID);
+        int choice;
+        printf("Choose number to update: ");
+        scanf("%d",&choice);
+        if(choice<1 || choice>fcount){ printf("❌ Invalid choice.\n"); continue;}
+        index=foundIndexes[choice-1];
+
+        printf("Choose field to update:\n1) Name\n2) Code\n3) Status\n4) Maintenance Date\nChoice: ");
+        int f;
+        scanf("%d",&f);
+        getchar(); // flush
+        switch(f){
+            case 1: printf("Enter new Name: "); fgets(list[index].name,MAX_FIELD,stdin); trimNewline(list[index].name); break;
+            case 2: printf("Enter new Code: "); fgets(list[index].code,MAX_FIELD,stdin); trimNewline(list[index].code); break;
+            case 3: printf("Enter new Status: "); fgets(list[index].status,MAX_FIELD,stdin); trimNewline(list[index].status); break;
+            case 4: printf("Enter new Maintenance Date: "); fgets(list[index].maintenanceDate,MAX_FIELD,stdin); trimNewline(list[index].maintenanceDate); break;
+            default: printf("❌ Invalid field.\n"); continue;
+        }
+
+        // write all back to CSV
+        FILE *fp=fopen(filename,"w");
+        for(int i=0;i<count;i++){
+            fprintf(fp,"%s,%s,%s,%s\n",
+                    list[i].name,list[i].code,list[i].status,list[i].maintenanceDate);
+        }
+        fclose(fp);
+        printf("✅ Update successful!\n");
     }
-    fclose(fp);
-    fclose(temp);
-    remove(filename);
-    rename("temp.csv", filename);
 }
 
+//-------------------DELETE-------------------
+void deleteRecordCSV(const char *filename, Machine **list, int *count){
+    char keyword[MAX_FIELD];
+    while(1){
+        printf("\nEnter keyword to search for delete (or '0' to return): ");
+        getchar(); fgets(keyword,sizeof(keyword),stdin); trimNewline(keyword);
+        if(strcmp(keyword,"0")==0) return;
 
+        int foundIndexes[MAX_LINE], fcount=0;
+        char kw[MAX_FIELD]; strcpy(kw,keyword); toLowerCase(kw);
+        for(int i=0;i<*count;i++){
+            char n[MAX_FIELD], c[MAX_FIELD], s[MAX_FIELD], d[MAX_FIELD];
+            strcpy(n,(*list)[i].name); strcpy(c,(*list)[i].code);
+            strcpy(s,(*list)[i].status); strcpy(d,(*list)[i].maintenanceDate);
+            toLowerCase(n); toLowerCase(c); toLowerCase(s); toLowerCase(d);
+            if(strstr(n,kw)||strstr(c,kw)||strstr(s,kw)||strstr(d,kw)){
+                fcount++;
+                foundIndexes[fcount-1]=i;
+                printf("%d) %s | %s | %s | %s\n", fcount,
+                       (*list)[i].name,(*list)[i].code,(*list)[i].status,(*list)[i].maintenanceDate);
+            }
+        }
+        if(fcount==0){ printf("❌ No match found.\n"); continue;}
+
+        int choice; printf("Choose number to delete: "); scanf("%d",&choice);
+        if(choice<1 || choice>fcount){ printf("❌ Invalid choice.\n"); continue;}
+        int index=foundIndexes[choice-1];
+
+        printf("Are you sure to delete (Y/N)? ");
+        char confirm; scanf(" %c",&confirm);
+        if(confirm!='Y' && confirm!='y'){ printf("❌ Cancelled.\n"); return;}
+
+        // shift array
+        for(int i=index;i<*count-1;i++)
+            (*list)[i]=(*list)[i+1];
+        (*count)--;
+
+        // write CSV
+        FILE *fp=fopen(filename,"w");
+        for(int i=0;i<*count;i++)
+            fprintf(fp,"%s,%s,%s,%s\n",
+                    (*list)[i].name,(*list)[i].code,(*list)[i].status,(*list)[i].maintenanceDate);
+        fclose(fp);
+
+        printf("✅ Delete successful!\n");
+        return;
+    }
+}
