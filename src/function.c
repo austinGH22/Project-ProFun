@@ -4,7 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
-//-------------------HELPERS-------------------
+
 void trimNewline(char *str) {
     size_t len = strlen(str);
     if(len > 0 && (str[len-1] == '\n' || str[len-1]=='\r'))
@@ -16,10 +16,11 @@ void toLowerCase(char *str) {
         str[i] = tolower((unsigned char)str[i]);
 }
 
-//-------------------READ CSV-------------------
+//Function read
 int readCSVToArray(const char *filename, Machine **list) {
     FILE *fp = fopen(filename, "r");
-    if(!fp) return 0;
+    if(!fp) 
+    return 0;
 
     Machine *temp = malloc(sizeof(Machine));
     int count = 0;
@@ -38,11 +39,11 @@ int readCSVToArray(const char *filename, Machine **list) {
     }
 
     fclose(fp);
-    *list = temp;
+    *list = temp; 
     return count;
 }
 
-//-------------------ADD-------------------
+//Function Add
 void addMachine(const char *filename, Machine **list, int *count) {
     Machine newMachine;
 
@@ -70,16 +71,24 @@ void addMachine(const char *filename, Machine **list, int *count) {
                 newMachine.status,
                 newMachine.maintenanceDate);
         fclose(fp);
-        printf("✅ Added successfully!\n");
+        printf("Added successfully!\n");
+        
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+         printf("\nPress Enter to return to menu...");
+        getchar();
+
     } else {
-        printf("❌ Failed to open CSV.\n");
+        printf("Failed to open CSV.\n");
     }
 }
 
-//-------------------SEARCH-------------------
+//Function Search
 void searchMachine(Machine *list, int count, char *keyword) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
     int found=0;
-    char kw[MAX_FIELD];
+    char kw[MAX_FIELD];       
     strcpy(kw, keyword);
     toLowerCase(kw);
 
@@ -98,16 +107,16 @@ void searchMachine(Machine *list, int count, char *keyword) {
             found=1;
         }
     }
-    if(!found) printf("❌ No results found for '%s'\n", keyword);
+    if(!found) printf("No results found for '%s'\n", keyword);
 }
 
-//-------------------UPDATE-------------------
+//Function update
 void updateMachine(const char *filename, Machine *list, int count) {
     char keyword[MAX_FIELD];
     int index=-1;
 
     while(1){
-        printf("\nEnter keyword to search for update (or '0' to return): ");
+        printf("\nSearch \"Name\" or \"Code\" or \"Status\" or \"Maintenance data\"for update (or '0' to return): ");
         getchar(); // clear buffer
         fgets(keyword, sizeof(keyword), stdin);
         trimNewline(keyword);
@@ -129,26 +138,26 @@ void updateMachine(const char *filename, Machine *list, int count) {
             }
         }
         if(fcount==0){
-            printf("❌ No match found.\n");
+            printf("No match found.\n");
             continue;
         }
 
         int choice;
         printf("Choose number to update: ");
         scanf("%d",&choice);
-        if(choice<1 || choice>fcount){ printf("❌ Invalid choice.\n"); continue;}
+        if(choice<1 || choice>fcount){ printf("Invalid choice.\n"); continue;}
         index=foundIndexes[choice-1];
 
         printf("Choose field to update:\n1) Name\n2) Code\n3) Status\n4) Maintenance Date\nChoice: ");
         int f;
         scanf("%d",&f);
-        getchar(); // flush
+        getchar(); 
         switch(f){
             case 1: printf("Enter new Name: "); fgets(list[index].name,MAX_FIELD,stdin); trimNewline(list[index].name); break;
             case 2: printf("Enter new Code: "); fgets(list[index].code,MAX_FIELD,stdin); trimNewline(list[index].code); break;
             case 3: printf("Enter new Status: "); fgets(list[index].status,MAX_FIELD,stdin); trimNewline(list[index].status); break;
             case 4: printf("Enter new Maintenance Date: "); fgets(list[index].maintenanceDate,MAX_FIELD,stdin); trimNewline(list[index].maintenanceDate); break;
-            default: printf("❌ Invalid field.\n"); continue;
+            default: printf("Invalid field.\n"); continue;
         }
 
         // write all back to CSV
@@ -158,11 +167,11 @@ void updateMachine(const char *filename, Machine *list, int count) {
                     list[i].name,list[i].code,list[i].status,list[i].maintenanceDate);
         }
         fclose(fp);
-        printf("✅ Update successful!\n");
+        printf("Update successful!\n");
     }
 }
 
-//-------------------DELETE-------------------
+//Function Delete
 void deleteRecordCSV(const char *filename, Machine **list, int *count){
     char keyword[MAX_FIELD];
     while(1){
@@ -194,19 +203,17 @@ void deleteRecordCSV(const char *filename, Machine **list, int *count){
         char confirm; scanf(" %c",&confirm);
         if(confirm!='Y' && confirm!='y'){ printf("❌ Cancelled.\n"); return;}
 
-        // shift array
         for(int i=index;i<*count-1;i++)
             (*list)[i]=(*list)[i+1];
         (*count)--;
 
-        // write CSV
         FILE *fp=fopen(filename,"w");
         for(int i=0;i<*count;i++)
             fprintf(fp,"%s,%s,%s,%s\n",
                     (*list)[i].name,(*list)[i].code,(*list)[i].status,(*list)[i].maintenanceDate);
         fclose(fp);
 
-        printf("✅ Delete successful!\n");
+        printf("Delete successful!\n");
         return;
     }
 }
