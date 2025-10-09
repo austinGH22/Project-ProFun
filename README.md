@@ -8,3 +8,7 @@
 - **Update** an equipment record (e.g., change working status or maintenance date).
 - **Delete** an equipment record by equipment ID.
 - **Display a user menu** to let users choose the desired operation.
+
+#run
+gcc main.c function.c -o output
+./output
