@@ -1,7 +1,8 @@
 ###RUN PROGRAM
+```bash
 gcc main.c function.c -o output
 ./output 
-
+```
 
 ### Compiling and Running Unit Tests
 ```bash
