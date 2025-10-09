@@ -1,7 +1,11 @@
 # Testing Documentation
 
 This document describes the testing setup and procedures for the Factory Equipment Management System.
-
+## Run main
+```
+gcc -o factory_management src/main.c src/function.c src/machine.c src/validation.c -I src
+./factory_management.exe
+```
 ## Test Structure
 
 The testing system consists of two main components:
