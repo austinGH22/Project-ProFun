@@ -9,6 +9,6 @@
 - **Delete** an equipment record by equipment ID.
 - **Display a user menu** to let users choose the desired operation.
 
-#run \n
+#run 
 gcc main.c function.c -o output
 ./output
