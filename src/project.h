@@ -20,3 +20,4 @@ void updateMachine(const char *filename, Machine *list, int count);
 void deleteRecordCSV(const char *filename, Machine **list, int *count);
 
 #endif 
+
