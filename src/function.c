@@ -90,7 +90,7 @@ void searchMachine(Machine *list, int count, char *keyword) {
     strcpy(kw, keyword);
     toLowerCase(kw);
 
-    printf("\n--- Search Results ---\n");
+    printf("\n--------------- SEARCH RESULT ---------------\n");
     for(int i=0;i<count;i++){
         char n[MAX_FIELD], c[MAX_FIELD], s[MAX_FIELD], d[MAX_FIELD];
         strcpy(n,list[i].name);
@@ -114,7 +114,7 @@ void updateMachine(const char *filename, Machine *list, int count) {
     int index=-1;
 
     while(1){
-        printf("\nSearch \"Name\" or \"Code\" or \"Status\" or \"Maintenance data\"for update (or '0' to return): ");
+        printf("\nSearch \"Name\" or \"Code\" or \"Status\" or \"Maintenance data\"for update (0 to return to menu) : ");
         getchar(); // clear buffer
         fgets(keyword, sizeof(keyword), stdin);
         trimNewline(keyword);
@@ -141,7 +141,7 @@ void updateMachine(const char *filename, Machine *list, int count) {
         }
 
         int choice;
-        printf("Choose number to update: ");
+        printf("Choose number to update ( 1 or 2 or ... (0 to return to menu): ");
         scanf("%d",&choice);
         if(choice<1 || choice>fcount){ printf("Invalid choice.\n"); continue;}
         index=foundIndexes[choice-1];
@@ -173,7 +173,7 @@ void updateMachine(const char *filename, Machine *list, int count) {
 void deleteRecordCSV(const char *filename, Machine **list, int *count){
     char keyword[MAX_FIELD];
     while(1){
-        printf("\nEnter keyword to search for delete (or '0' to return): ");
+        printf("\nEnter keyword to search for delete : ");
         getchar(); fgets(keyword,sizeof(keyword),stdin); trimNewline(keyword);
         if(strcmp(keyword,"0")==0) return;
 
@@ -191,15 +191,17 @@ void deleteRecordCSV(const char *filename, Machine **list, int *count){
                        (*list)[i].name,(*list)[i].code,(*list)[i].status,(*list)[i].maintenanceDate);
             }
         }
-        if(fcount==0){ printf("❌ No match found.\n"); continue;}
+        if(fcount==0){ printf("No match found.\n"); continue;}
 
-        int choice; printf("Choose number to delete: "); scanf("%d",&choice);
-        if(choice<1 || choice>fcount){ printf("❌ Invalid choice.\n"); continue;}
+        int choice; printf("Choose number to delete ( 1 or 2 or ... ): "); scanf("%d",&choice);
+        if(choice<1 || choice>fcount){ printf("Invalid choice.\n"); continue;}
         int index=foundIndexes[choice-1];
 
         printf("Are you sure to delete (Y/N)? ");
-        char confirm; scanf(" %c",&confirm);
-        if(confirm!='Y' && confirm!='y'){ printf("❌ Cancelled.\n"); return;}
+        while (getchar() != '\n');
+        char confirm; scanf(" %c",&confirm); 
+        if(confirm!='Y' && confirm!='y')
+        { printf("Cancelled.\n"); return;}
 
         for(int i=index;i<*count-1;i++)
             (*list)[i]=(*list)[i+1];
