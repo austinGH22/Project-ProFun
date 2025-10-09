@@ -1,18 +1,18 @@
-Drill Press, E001, Operational, 2025-07-23  
-Lathe Machine, E002, Stopped, 2024-06-25  
-Milling Machine, E003, Operational, 2024-03-27  
-Grinding Machine, E004, Stopped, 2026-07-28  
-Arc Welding Machine, E005, Operational, 2024-09-26  
-Laser Cutting Machine, E006, Under Maintenance, 2025-02-14  
-Plasma Cutting Machine, E007, Operational, 2026-04-09  
-Overhead Crane, E008, Stopped, 2024-11-18  
-Air Compressor, E009, Operational, 2025-08-30  
-Industrial Pump, E010, Under Maintenance, 2026-05-11  
-Electric Motor, E011, Operational, 2024-12-07  
-Control Panel, E012, Stopped, 2026-01-22  
-Conveyor Belt, E013, Operational, 2025-06-14  
-Industrial Robot Arm, E014, Under Maintenance, 2024-08-03  
-3D Printer, E015, Operational, 2026-03-20  
-Hydraulic Press, E016, Stopped, 2025-10-11  
-CNC Machine, E017, Operational, 2024-05-27  
-Forklift, E018, Under Maintenance, 2025-09-05  
+Austin,E001,Operational,2030-01-01
+Lathe Machine,E002,Stopped,2024-06-25
+Milling Machine,E003,Operational,2024-03-27
+Grinding Machine,E004,Stopped,2026-07-28
+Arc Welding Machine,E005,Operational,2024-09-26
+Laser Cutting Machine,E006,Under Maintenance,2025-02-14
+Plasma Cutting Machine,E007,Operational,2026-04-09
+Overhead Crane,E008,Stopped,2024-11-18
+Air Compressor,E009,Operational,2025-08-30
+Industrial Pump,E010,Under Maintenance,2026-05-11
+Electric Motor,E011,Operational,2024-12-07
+Control Panel,E012,Stopped, 2026-01-22
+Conveyor Belt,E013,Operational,2025-06-14
+Industrial Robot Arm,E014,Under Maintenance,2024-08-03
+3D Printer,E015,Operational,2026-03-20
+Hydraulic Press,E016,Stopped,2025-10-11
+Austin,E017,Online,5555-55-55
+A,A,A,A
